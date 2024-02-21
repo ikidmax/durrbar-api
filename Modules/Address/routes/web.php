@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\User\App\Http\Controllers\AuthController;
+use Modules\Address\App\Http\Controllers\AddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +15,5 @@ use Modules\User\App\Http\Controllers\AuthController;
 */
 
 // Route::group([], function () {
-//     Route::resource('auth', AuthController::class)->names('auth');
+//     Route::resource('address', AddressController::class)->names('address');
 // });
-
-Route::domain(env('FRONTEND_URL'))->group(function () {
-    Route::get('/auth/verify')->name('verification.notice');
-});

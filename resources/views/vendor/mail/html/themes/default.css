@@ -3,8 +3,9 @@
 body,
 body *:not(html):not(style):not(br):not(tr):not(code) {
     box-sizing: border-box;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+        "Segoe UI Symbol";
     position: relative;
 }
 
@@ -80,7 +81,7 @@ img {
     -premailer-cellpadding: 0;
     -premailer-cellspacing: 0;
     -premailer-width: 100%;
-    background-color: #edf2f7;
+    background-color: #edf2f733;
     margin: 0;
     padding: 0;
     width: 100%;
@@ -112,9 +113,9 @@ img {
 /* Logo */
 
 .logo {
-    height: 75px;
-    max-height: 75px;
-    width: 75px;
+    height: 40px;
+    max-height: 40px;
+    /* width: 75px; */
 }
 
 /* Body */
@@ -232,29 +233,29 @@ img {
 
 .button-blue,
 .button-primary {
-    background-color: #2d3748;
-    border-bottom: 8px solid #2d3748;
-    border-left: 18px solid #2d3748;
-    border-right: 18px solid #2d3748;
-    border-top: 8px solid #2d3748;
+    background-color: #2065d1;
+    border-bottom: 8px solid #2065d1;
+    border-left: 18px solid #2065d1;
+    border-right: 18px solid #2065d1;
+    border-top: 8px solid #2065d1;
 }
 
 .button-green,
 .button-success {
-    background-color: #48bb78;
-    border-bottom: 8px solid #48bb78;
-    border-left: 18px solid #48bb78;
-    border-right: 18px solid #48bb78;
-    border-top: 8px solid #48bb78;
+    background-color: #22c55e;
+    border-bottom: 8px solid #22c55e;
+    border-left: 18px solid #22c55e;
+    border-right: 18px solid #22c55e;
+    border-top: 8px solid #22c55e;
 }
 
 .button-red,
 .button-error {
-    background-color: #e53e3e;
-    border-bottom: 8px solid #e53e3e;
-    border-left: 18px solid #e53e3e;
-    border-right: 18px solid #e53e3e;
-    border-top: 8px solid #e53e3e;
+    background-color: #ff5630;
+    border-bottom: 8px solid #ff5630;
+    border-left: 18px solid #ff5630;
+    border-right: 18px solid #ff5630;
+    border-top: 8px solid #ff5630;
 }
 
 /* Panels */

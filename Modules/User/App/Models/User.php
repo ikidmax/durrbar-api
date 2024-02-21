@@ -2,17 +2,19 @@
 
 namespace Modules\User\App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
+use Modules\Address\App\Models\Address;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Modules\User\App\Models\Traits\HasProfilePhoto;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Modules\User\App\Models\Traits\HasProfilePhoto;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasUuids, HasApiTokens, HasFactory, HasProfilePhoto, Notifiable;
+    use HasFactory, HasUuids, HasApiTokens, HasProfilePhoto, Notifiable;
 
     protected $table = "users";
 
@@ -32,6 +34,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'first_name',
         'last_name',
         'password',
+        'phone',
+        'birthday',
+        'gender',
     ];
 
     /**
@@ -53,4 +58,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    /**
+     * Get all of the user's addresses.
+     */
+    public function addresses(): MorphMany
+    {
+        return $this->morphMany(Address::class, 'addressable');
+    }
 }

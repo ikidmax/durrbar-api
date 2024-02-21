@@ -162,8 +162,10 @@ return [
         App\Providers\FortifyServiceProvider::class,
 
         Nwidart\Modules\LaravelModulesServiceProvider::class,
-
-        // Aws\Laravel\AwsServiceProvider::class,
+        /*
+         * Custom Service Providers...
+         */
+        App\Providers\CustomPolymorphicTypesServiceProvider::class,
         /*
          * Application Service Providers...
          */
