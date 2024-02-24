@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\RouteServiceProvider;
 use Laravel\Fortify\Features;
 
 return [
@@ -102,6 +103,8 @@ return [
     */
 
     'middleware' => ['api'],
+
+    // 'auth_middleware' => 'auth:sanctum',
 
     /*
     |--------------------------------------------------------------------------

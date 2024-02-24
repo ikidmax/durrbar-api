@@ -6,12 +6,14 @@ namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
-use Laravel\Fortify\Contracts\{LoginResponse, LogoutResponse, PasswordUpdateResponse, RegisterResponse, ProfileInformationUpdatedResponse};
+use Laravel\Fortify\Contracts\{LoginResponse, LogoutResponse, PasswordUpdateResponse, RegisterResponse, ProfileInformationUpdatedResponse, TwoFactorConfirmedResponse, TwoFactorDisabledResponse, TwoFactorEnabledResponse};
 use Modules\User\App\Actions\Fortify\{CreateNewUser, ResetUserPassword, UpdateUserPassword, UpdateUserProfileInformation};
+use Modules\User\App\Http\Resources\UserResource;
 use Modules\User\App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,12 +31,12 @@ class FortifyServiceProvider extends ServiceProvider
             {
                 if ($request->wantsJson()) {
                     $user = User::where('email', $request->email)->first();
-                    // $token = $user->createToken('token')->plainTextToken;
-                    // $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
+                    $token = $user->createToken('token')->plainTextToken;
+                    $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
                     return response()->json([
                         "message" => "You are successfully logged in",
                         'data' => ['user' => $user],
-                    ], Response::HTTP_OK);
+                    ], Response::HTTP_OK)->withCookie($cookie);
                 }
                 return redirect()->intended(Fortify::redirects('login'));
             }
@@ -46,13 +48,13 @@ class FortifyServiceProvider extends ServiceProvider
         {
             public function toResponse($request)
             {
-                $user = User::where('email', $request->email)->first();
+                $user = new UserResource(User::where('email', $request->email)->first());
                 $token = $user->createToken('token')->plainTextToken;
                 $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
                 return $request->wantsJson()
                     ? response()->json([
                         "message" => "Registration successful, verify your email address.",
-                        'data' => ['user' => $user],
+                        'user' => $user,
                     ], Response::HTTP_OK)->withCookie($cookie)
                     : redirect()->intended(Fortify::redirects('register'));
             }
@@ -80,14 +82,49 @@ class FortifyServiceProvider extends ServiceProvider
             }
         });
 
+
         //customized password update response
         $this->app->instance(PasswordUpdateResponse::class, new class implements PasswordUpdateResponse
+
         {
             public function toResponse($request)
             {
                 return $request->wantsJson()
                     ? response()->json(['message' => 'Password updated successfully'], Response::HTTP_OK)
                     : back()->with('status', Fortify::PASSWORD_UPDATED);
+            }
+        });
+
+        //customized 2fa confirmd response
+        $this->app->instance(TwoFactorConfirmedResponse::class, new class implements TwoFactorConfirmedResponse
+        {
+            public function toResponse($request)
+            {
+                return $request->wantsJson()
+                    ? response()->json(['message' => '2FA confirmed successfully'], Response::HTTP_OK)
+                    : back()->with('status', Fortify::TWO_FACTOR_AUTHENTICATION_CONFIRMED);
+            }
+        });
+
+        //customized 2fa disabled response
+        $this->app->instance(TwoFactorDisabledResponse::class, new class implements TwoFactorDisabledResponse
+        {
+            public function toResponse($request)
+            {
+                return $request->wantsJson()
+                    ? response()->json(['message' => '2FA disabled successfully'], Response::HTTP_OK)
+                    : back()->with('status', Fortify::TWO_FACTOR_AUTHENTICATION_DISABLED);
+            }
+        });
+
+        //customized 2fa enabled response
+        $this->app->instance(TwoFactorEnabledResponse::class, new class implements TwoFactorEnabledResponse
+        {
+            public function toResponse($request)
+            {
+                return $request->wantsJson()
+                    ? response()->json(['message' => '2FA enabled successfully'], Response::HTTP_OK)
+                    : back()->with('status', Fortify::TWO_FACTOR_AUTHENTICATION_ENABLED);
             }
         });
     }
@@ -97,6 +134,15 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Fortify::authenticateUsing(function (Request $request) {
+        //     $user = User::where('email', $request->email)->first();
+
+        //     if ($user &&
+        //         Hash::check($request->password, $user->password)) {
+        //         return $user;
+        //     }
+        // });
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);

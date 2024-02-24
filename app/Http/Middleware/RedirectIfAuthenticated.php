@@ -6,6 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Modules\User\App\Http\Resources\UserResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
@@ -21,6 +22,11 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+
+                if ($request->expectsJson()) {
+                    return response()->json(['message' => 'Already authenticated.', 'user' => new UserResource(($request->user()))], 200);
+                }
+
                 return redirect(RouteServiceProvider::HOME);
             }
         }

@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Storage;
 trait HasProfilePhoto
 {
     /**
-    * Update the user's profile photo.
-    *
-    * @param \Illuminate\Http\UploadedFile $photo
-    * @return void
-    */
+     * Update the user's profile photo.
+     *
+     * @param \Illuminate\Http\UploadedFile $photo
+     * @return void
+     */
     public function updateProfilePhoto(UploadedFile $photo)
     {
         tap($this->photo, function ($previous) use ($photo) {
@@ -23,7 +23,9 @@ trait HasProfilePhoto
             // Upload & save photo
             $this->forceFill([
                 'photo' => $photo->storePubliclyAS(
-                    '/uploads/user/avater', $fileName, ['disk' => $this->profilePhotoDisk()]
+                    '/uploads/user/avater',
+                    $fileName,
+                    ['disk' => $this->profilePhotoDisk()]
                 ),
             ])->save();
             // Delete if avatar exist
@@ -32,18 +34,18 @@ trait HasProfilePhoto
             }
         });
     }
-    
+
     /**
-    *Delete the user's profile photo.
-    *
-    * @return void
-    */
+     *Delete the user's profile photo.
+     *
+     * @return void
+     */
     public function deleteProfilePhoto()
     {
         // if (! Features::manages Profile Photos()) {
         //    return;
         // }
-        
+
         if (is_null($this->photo)) {
             return;
         }
@@ -63,11 +65,11 @@ trait HasProfilePhoto
     public function getPhotoUrlAttribute()
     {
         return $this->photo
-         ? Storage::disk($this->profilePhotoDisk())->url($this->photo)
-         : $this->defaultProfilePhotoUrl();
+            ? Storage::disk($this->profilePhotoDisk())->url($this->photo)
+            : $this->defaultProfilePhotoUrl();
     }
 
-        /**
+    /**
      * Get the default profile photo URL if no phofile photo has been uploaded
      * 
      * @return string
@@ -77,18 +79,18 @@ trait HasProfilePhoto
         $name = trim(collect(explode(' ', $this->name))->map(function ($segment) {
             return mb_substr($segment, 0, 1);
         })->join(' '));
-        
-        return 'https://ui-avatars.com/api/?name='.urlencode($name). '&color=7F9CF5&background=EBF4FF';
+
+        return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&color=7F9CF5&background=EBF4FF';
     }
-    
+
     /**
-    * Get the disk that profile photos should be stored on.
-    *  
-    * @return string
-    */
+     * Get the disk that profile photos should be stored on.
+     *  
+     * @return string
+     */
 
     protected function profilePhotoDisk()
     {
-        return isset($_ENV['FILESYSTEM_DISK']) ? $_ENV['FILESYSTEM_DISK'] : config('fortify.profile_photo_disk', 'public');
+        return env('FILESYSTEM_DISK');
     }
 }

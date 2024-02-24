@@ -27,15 +27,29 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'max:255',
                 Rule::unique('users')->ignore($user->id),
             ],
+
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'max:14'],
+            'birthday',
+            'gender',
+
         ])->validateWithBag('updateProfileInformation');
 
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
+        if (
+            $input['email'] !== $user->email &&
+            $user instanceof MustVerifyEmail
+        ) {
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([
                 'name' => $input['name'],
                 'email' => $input['email'],
+                'first_name' => $input['first_name'],
+                'last_name' => $input['last_name'],
+                'phone' => $input['phone'],
+                'birthday' => $input['birthday'],
+                'gender' => $input['gender'],
             ])->save();
         }
     }
@@ -50,6 +64,11 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         $user->forceFill([
             'name' => $input['name'],
             'email' => $input['email'],
+            'first_name' => $input['first_name'],
+            'last_name' => $input['last_name'],
+            'phone' => $input['phone'],
+            'birthday' => $input['birthday'],
+            'gender' => $input['gender'],
             'email_verified_at' => null,
         ])->save();
 

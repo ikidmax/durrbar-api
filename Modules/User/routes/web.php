@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
 use Modules\User\App\Http\Controllers\AuthController;
 
 /*
@@ -14,10 +15,9 @@ use Modules\User\App\Http\Controllers\AuthController;
 |
 */
 
-// Route::group([], function () {
-//     Route::resource('auth', AuthController::class)->names('auth');
-// });
-
-Route::domain(env('FRONTEND_URL'))->group(function () {
-    Route::get('/auth/verify')->name('verification.notice');
+Route::domain(env('FRONTEND_URL', 'www.durrbar.local'))->group(function () {
+    Route::get('/auth/email-verify')->name('verification.notice');
+    Route::get('/auth/new-password/{token}', [NewPasswordController::class, 'create'])
+        ->middleware(['guest:' . config('fortify.guard')])
+        ->name('password.reset');
 });

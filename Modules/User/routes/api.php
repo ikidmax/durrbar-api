@@ -28,6 +28,8 @@ use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
 use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
 use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
+use Modules\User\App\Http\Resources\UserResource;
+
 // use Laravel\Fortify\RoutePath;
 
 
@@ -45,63 +47,63 @@ use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 
     // Authentication routes
-    Route::prefix('auth')->group(function () {
+    // Route::prefix('auth')->group(function () {
 
-        // Retrieve the verification limiter configuration for verification attempts
-        $verificationLimiter = config('fortify.limiters.verification', '6,1');
+    // Retrieve the verification limiter configuration for verification attempts
+    $verificationLimiter = config('fortify.limiters.verification', '6,1');
 
-        Route::withoutMiddleware('auth:sanctum')->group(function () {
-            // Route for user login
-            Route::prefix('login')->group(function () {
-                // Retrieve the limiter configuration for login attempts
-                $limiter = config('fortify.limiters.login');
-                Route::post('/', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
-                    'guest:' . config('fortify.guard'),  // Only guests (non-authenticated users) are allowed
-                    $limiter ? 'throttle:' . $limiter : null,  // Throttle login attempts if limiter is configured
-                ]));
-                Route::post('/callback', [SocialiteController::class, 'handleProviderCallback']);
-                Route::middleware('web')->get('/redirect/{provider}', function ($provider) {
-                    return Socialite::driver($provider)->redirect();
-                });
+    Route::withoutMiddleware('auth:sanctum')->group(function () {
+        //     // Route for user login
+        Route::prefix('login')->group(function () {
+            //         // Retrieve the limiter configuration for login attempts
+            $limiter = config('fortify.limiters.login');
+            Route::post('/', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
+                'guest:' . config('fortify.guard'),  // Only guests (non-authenticated users) are allowed
+                $limiter ? 'throttle:' . $limiter : null,  // Throttle login attempts if limiter is configured
+            ]));
+            Route::post('/callback', [SocialiteController::class, 'handleProviderCallback']);
+            Route::middleware('web')->get('/redirect/{provider}', function ($provider) {
+                return Socialite::driver($provider)->redirect();
             });
-
-            // Registration...
-            Route::post('/register', [RegisteredUserController::class, 'store'])
-                ->middleware(['guest:' . config('fortify.guard')]);  // Only guests (non-authenticated users) are allowed
-            // Password Reset...
-            Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-                ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
-                ->name('password.email');  // Name for the route
-            Route::post('/reset-password', [NewPasswordController::class, 'store'])
-                ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
-                ->name('password.update');  // Name for the route
-
-            // Two Factor Authentication...
-            $twoFactorLimiter = config('fortify.limiters.two-factor');
-            Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
-                ->middleware(array_filter([
-                    'guest:' . config('fortify.guard'),
-                    $twoFactorLimiter ? 'throttle:' . $twoFactorLimiter : null,
-                ]));
         });
 
-        // Email Verification...
-        // Route to v email verification notification
-        Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-            ->name('verification.verify');
-        // Route to resend email verification notification
-        Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware([
-            'throttle:' . $verificationLimiter // Throttle resend email attempts
-        ]);
+        //     // Registration...
+        Route::post('/register', [RegisteredUserController::class, 'store'])
+            ->middleware(['guest:' . config('fortify.guard')]);  // Only guests (non-authenticated users) are allowed
+        // Password Reset...
+        Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+            ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
+            ->name('password.email');  // Name for the route
+        Route::post('/reset-password', [NewPasswordController::class, 'store'])
+            ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
+            ->name('password.update');  // Name for the route
 
-        Route::post('/logout', [LogoutController::class, 'destroy']);
+        //     // Two Factor Authentication...
+        $twoFactorLimiter = config('fortify.limiters.two-factor');
+        Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
+            ->middleware(array_filter([
+                'guest:' . config('fortify.guard'),
+                $twoFactorLimiter ? 'throttle:' . $twoFactorLimiter : null,
+            ]));
     });
+
+    // Email Verification...
+    // Route to v email verification notification
+    Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+        ->name('verification.verify');
+    // // Route to resend email verification notification
+    Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware([
+        'throttle:' . $verificationLimiter // Throttle resend email attempts
+    ]);
+
+    Route::post('/logout', [LogoutController::class, 'destroy']);
+    // });
 
     // User routes
     Route::prefix('user')->middleware(['verified'])->group(function () {
 
         Route::get('/me', function (Request $request) {
-            $user = $request->user();
+            $user = new UserResource($request->user());
             return response()->json(['data' => ['user' => $user]], Response::HTTP_OK);
         });
 
@@ -110,17 +112,14 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
         Route::post('/remove-photo', [ProfilePhotoController::class, 'delete']);
         Route::put('/profile-information', [ProfileInformationController::class, 'update']);
 
-        // Passwords...
+        // // Passwords...
         Route::put('/update-password', [PasswordController::class, 'update']);
 
-        // Password Confirmation...
+        // // Password Confirmation...
         Route::get('/confirmed-password-status', [ConfirmedPasswordStatusController::class, 'show']);
         Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store']);
 
-        //
-        // Route::resource('address', AddressController::class)->names('address');
-
-        // Two Factor Authentication...
+        // // Two Factor Authentication...
         $twoFactorMiddleware = Features::optionEnabled(Features::twoFactorAuthentication(), 'confirmPassword')
             ? [config('fortify.auth_middleware', 'auth') . ':' . config('fortify.guard'), 'password.confirm']
             : [config('fortify.auth_middleware', 'auth') . ':' . config('fortify.guard')];

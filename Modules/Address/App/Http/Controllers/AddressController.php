@@ -7,6 +7,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Address\App\Http\Requests\AddressRequest;
+use Modules\Address\App\Http\Resources\AddressResource;
 use Modules\Address\App\Models\Address;
 
 class AddressController extends Controller
@@ -18,9 +19,9 @@ class AddressController extends Controller
     {
         // return view('user::index');
         $user = $request->user();
-        $addresses = $user->addresses;
+        $addresses = AddressResource::collection($user->addresses);
 
-        return response(['message' => 'Success', 'addresses' => $addresses], Response::HTTP_OK);
+        return response()->json(['message' => 'Success', 'addresses' => $addresses], Response::HTTP_OK);
     }
 
     /**
@@ -52,7 +53,7 @@ class AddressController extends Controller
             'address_type' => $request->address_type,
         ]);
 
-        return response(['message' => 'Success', 'address' => $address], Response::HTTP_OK);
+        return response()->json(['message' => 'Success', 'address' => new AddressResource($address)], Response::HTTP_OK);
     }
 
     /**
@@ -63,7 +64,7 @@ class AddressController extends Controller
         // return view('address::show');
         $address = Address::where('id', $id)->firstOrFail();
 
-        return response(['message' => 'Success', 'address' => $address], Response::HTTP_OK);
+        return response()->json(['message' => 'Success', 'address' => $address], Response::HTTP_OK);
     }
 
     /**
@@ -95,7 +96,7 @@ class AddressController extends Controller
 
         $address->save();
 
-        return response(['message' => 'Success', 'address' => $address], Response::HTTP_OK);
+        return response()->json(['message' => 'Success', 'address' => new AddressResource($address)], Response::HTTP_OK);
     }
 
     /**

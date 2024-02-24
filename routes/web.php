@@ -18,6 +18,9 @@ Route::get('/', function () {
     return redirect(env("FRONTEND_URL"));
 });
 
-Route::get('/clear-cache', function() {
+Route::get('/cc', function () {
     Artisan::call('cache:clear');
+});
+Route::get('/c', function () {
+    return view('welcome');
 });

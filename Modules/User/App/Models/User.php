@@ -11,10 +11,11 @@ use Modules\User\App\Models\Traits\HasProfilePhoto;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, HasUuids, HasApiTokens, HasProfilePhoto, Notifiable;
+    use HasFactory, HasUuids, HasApiTokens, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable;
 
     protected $table = "users";
 
