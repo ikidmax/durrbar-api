@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('city');
             $table->string('zip_code');
             $table->string('address');
-            $table->boolean('primary')->default('false');
+            $table->boolean('primary')->default(false);
             $table->string('address_type')->nullable();
             $table->timestamps();
         });

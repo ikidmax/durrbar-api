@@ -100,7 +100,7 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
     // User routes
     Route::prefix('user')->middleware(['verified'])->group(function () {
 
-        Route::get('/', function (Request $request) {
+        Route::get('/me', function (Request $request) {
             $user = $request->user();
             return response()->json(['data' => ['user' => $user]], Response::HTTP_OK);
         });

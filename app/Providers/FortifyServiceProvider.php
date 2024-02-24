@@ -11,7 +11,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Fortify;
 use Laravel\Fortify\Contracts\{LoginResponse, LogoutResponse, PasswordUpdateResponse, RegisterResponse, ProfileInformationUpdatedResponse};
-use Modules\User\App\Actions\Fortify\{CreateNewUser, ResetUserPassword,UpdateUserPassword, UpdateUserProfileInformation};
+use Modules\User\App\Actions\Fortify\{CreateNewUser, ResetUserPassword, UpdateUserPassword, UpdateUserProfileInformation};
 use Modules\User\App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,25 +23,27 @@ class FortifyServiceProvider extends ServiceProvider
     public function register(): void
     {
         //customized login response
-        $this->app->instance(LoginResponse::class, new class implements LoginResponse {
+        $this->app->instance(LoginResponse::class, new class implements LoginResponse
+        {
             public function toResponse($request)
             {
-                if($request->wantsJson()) {
+                if ($request->wantsJson()) {
                     $user = User::where('email', $request->email)->first();
-                    $token = $user->createToken('token')->plainTextToken;
-                    $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
+                    // $token = $user->createToken('token')->plainTextToken;
+                    // $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
                     return response()->json([
                         "message" => "You are successfully logged in",
                         'data' => ['user' => $user],
-                    ], Response::HTTP_OK)->withCookie($cookie);
+                    ], Response::HTTP_OK);
                 }
                 return redirect()->intended(Fortify::redirects('login'));
             }
         });
 
-             
+
         //customized register response
-        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
+        $this->app->instance(RegisterResponse::class, new class implements RegisterResponse
+        {
             public function toResponse($request)
             {
                 $user = User::where('email', $request->email)->first();
@@ -55,9 +57,10 @@ class FortifyServiceProvider extends ServiceProvider
                     : redirect()->intended(Fortify::redirects('register'));
             }
         });
-        
+
         //customized logout response
-        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse {
+        $this->app->instance(LogoutResponse::class, new class implements LogoutResponse
+        {
             public function toResponse($request)
             {
                 return $request->wantsJson()
@@ -65,9 +68,10 @@ class FortifyServiceProvider extends ServiceProvider
                     : redirect(Fortify::redirects('logout', '/'));
             }
         });
-        
+
         //customized profile update response
-        $this->app->instance(ProfileInformationUpdatedResponse::class, new class implements ProfileInformationUpdatedResponse {
+        $this->app->instance(ProfileInformationUpdatedResponse::class, new class implements ProfileInformationUpdatedResponse
+        {
             public function toResponse($request)
             {
                 return $request->wantsJson()
@@ -75,9 +79,10 @@ class FortifyServiceProvider extends ServiceProvider
                     : back()->with('status', Fortify::PROFILE_INFORMATION_UPDATED);
             }
         });
-        
+
         //customized password update response
-        $this->app->instance(PasswordUpdateResponse::class, new class implements PasswordUpdateResponse {
+        $this->app->instance(PasswordUpdateResponse::class, new class implements PasswordUpdateResponse
+        {
             public function toResponse($request)
             {
                 return $request->wantsJson()
@@ -98,7 +103,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
 
             return Limit::perMinute(5)->by($throttleKey);
         });
