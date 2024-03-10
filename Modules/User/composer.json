@@ -1,12 +1,19 @@
 {
-    "name": "nwidart/user",
+    "name": "durrbar/user",
     "description": "",
     "authors": [
         {
-            "name": "Nicolas Widart",
-            "email": "n.widart@gmail.com"
+            "name": "Kid Max",
+            "email": "kidmax285@gmail.com"
         }
     ],
+    "require": {
+        "php": "^8.1",
+        "laravel/fortify": "^1.20",
+        "laravel/sanctum": "^3.3",
+        "laravel/socialite": "^5.11",
+        "nwidart/laravel-modules": "^10.0"
+    },
     "extra": {
         "laravel": {
             "providers": [],

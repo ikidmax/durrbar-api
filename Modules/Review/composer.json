@@ -1,0 +1,31 @@
+{
+    "name": "durrbar/review",
+    "description": "",
+    "authors": [
+        {
+            "name": "Kid Max",
+            "email": "kidmax285@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Review\\": "",
+            "Modules\\Review\\App\\": "app/",
+            "Modules\\Review\\Database\\Factories\\": "database/factories/",
+            "Modules\\Review\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Review\\Tests\\": "tests/"
+        }
+    }
+}

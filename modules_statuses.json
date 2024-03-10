@@ -1,4 +1,15 @@
 {
     "User": true,
-    "Address": true
+    "Address": true,
+    "Post": true,
+    "Tag": true,
+    "Comment": true,
+    "Color": true,
+    "Image": true,
+    "Invoice": true,
+    "Order": true,
+    "Product": true,
+    "Review": true,
+    "Size": true,
+    "Wishlist": true
 }

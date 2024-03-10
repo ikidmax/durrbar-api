@@ -10,10 +10,7 @@
     "require": {
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.2",
-        "laravel/fortify": "^1.20",
         "laravel/framework": "^10.10",
-        "laravel/sanctum": "^3.3",
-        "laravel/socialite": "^5.11",
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "3.0",
         "nwidart/laravel-modules": "^10.0"

@@ -22,8 +22,18 @@ class CustomPolymorphicTypesServiceProvider extends ServiceProvider
     {
         Relation::enforceMorphMap([
             'address' => 'Modules\Address\App\Models\Address',
+            'color' => 'Modules\Color\App\Models\Color',
+            'comment' => 'Modules\Comment\App\Models\Comment',
+            'image' => 'Modules\Image\App\Models\Image',
+            'invoice' => 'Modules\Invoice\App\Models\Invoice',
+            'order' => 'Modules\Order\App\Models\Order',
+            'post' => 'Modules\Post\App\Models\Post',
+            'product' => 'Modules\Product\App\Models\Product',
+            'review' => 'Modules\Review\App\Models\Review',
+            'size' => 'Modules\Size\App\Models\Size',
+            'tag' => 'Modules\Tag\App\Models\Tag',
             'user' => 'Modules\User\App\Models\User',
-            // 'video' => 'App\Models\Video',
+            'wishlist' => 'Modules\Wishlist\App\Models\Wishlist',
         ]);
     }
 }

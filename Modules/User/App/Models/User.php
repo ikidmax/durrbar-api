@@ -3,7 +3,6 @@
 namespace Modules\User\App\Models;
 
 use Laravel\Sanctum\HasApiTokens;
-use Modules\Address\App\Models\Address;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -13,14 +12,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 
+use Modules\Address\App\Models\Address;
+use Modules\Comment\App\Models\Comment;
+use Modules\Invoice\App\Models\Invoice;
+use Modules\Order\App\Models\Order;
+use Modules\Review\App\Models\Review;
+use Modules\User\Database\Factories\UserFactory;
+use Modules\Wishlist\App\Models\Wishlist;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, HasUuids, HasApiTokens, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable;
+    use HasFactory;
+    use HasUuids;
+    use Notifiable;
+    use HasApiTokens;
+    use HasProfilePhoto;
+    use TwoFactorAuthenticatable;
 
-    protected $table = "users";
+    /**
+     * The table associated with the model.
+     */
+    protected $table = 'users';
 
     protected $appends = [
-        'photo_url'
+        'photo_url',
+        'name'
     ];
 
     /**
@@ -29,7 +45,6 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
         'email',
         'photo',
         'first_name',
@@ -39,6 +54,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'birthday',
         'gender',
     ];
+
+    protected static function newFactory(): UserFactory
+    {
+        return UserFactory::new();
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -61,10 +81,78 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * Get all of the user's addresses.
+     * Return the full name of the customer.
+     *
+     * @return string
+     */
+    public function getNameAttribute()
+    {
+        return trim(
+            preg_replace(
+                '/\s+/',
+                ' ',
+                "{$this->first_name} {$this->last_name}"
+            )
+        );
+    }
+
+    /**
+     * Return the addresses relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
     public function addresses(): MorphMany
     {
         return $this->morphMany(Address::class, 'addressable');
+    }
+
+    /**
+     * Return the comments relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    /**
+     * Return the invoises relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function invoises(): MorphMany
+    {
+        return $this->morphMany(Invoice::class, 'invoiseable');
+    }
+
+    /**
+     * Return the orders relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function orders(): MorphMany
+    {
+        return $this->morphMany(Order::class, 'orderable');
+    }
+
+    /**
+     * Return the orders relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function reviews(): MorphMany
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
+    /**
+     * Return the wishlists relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function wishlists(): MorphMany
+    {
+        return $this->morphMany(Wishlist::class, 'wishlistable');
     }
 }

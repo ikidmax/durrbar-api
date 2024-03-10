@@ -17,8 +17,7 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make($request->only('name', 'first_name', 'last_name', 'email', 'password', 'password_confirmation'), [
-            'name' => ['required', 'min:2', 'max:50', 'string'],
+        $validator = Validator::make($request->only('first_name', 'last_name', 'email', 'password', 'password_confirmation'), [
             'first_name' => ['required', 'min:2', 'max:50', 'string'],
             'last_name' => ['required', 'min:2', 'max:50', 'string'],
             'email' => ['required', 'email', 'unique:users,email'],
@@ -27,7 +26,7 @@ class AuthController extends Controller
 
         if ($validator->fails()) return response()->json($validator->errors(), Response::HTTP_BAD_REQUEST);
 
-        $input = $request->only('name', 'first_name', 'last_name', 'email', 'password');
+        $input = $request->only('first_name', 'last_name', 'email', 'password');
 
         $input['password'] = Hash::make($request['password']);
 
@@ -36,7 +35,7 @@ class AuthController extends Controller
         $token = $user->createToken('token')->plainTextToken;
 
         $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
-        
+
         return response(['message' => 'Success', 'data' => ['user' => $user]], Response::HTTP_OK)->withCookie($cookie);
     }
 
@@ -58,7 +57,7 @@ class AuthController extends Controller
 
             // return response()->json($data, 200);
         }
-        
+
         return response(['message' => 'Invalid credentials!'], Response::HTTP_UNAUTHORIZED);
     }
 

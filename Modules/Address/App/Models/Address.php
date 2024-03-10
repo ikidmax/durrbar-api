@@ -5,14 +5,20 @@ namespace Modules\Address\App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Modules\Address\Database\factories\AddressFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Address\Database\Factories\AddressFactory;
+
+use Modules\User\App\Models\User;
 
 class Address extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
+    use SoftDeletes;
 
-    protected $table = "addresses";
+    protected $table = 'addresses';
 
     /**
      * The attributes that are mass assignable.
@@ -29,10 +35,10 @@ class Address extends Model
         'address_type',
     ];
 
-    // protected static function newFactory(): AddressFactory
-    // {
-    //     //return AddressFactory::new();
-    // }
+    protected static function newFactory(): AddressFactory
+    {
+        return AddressFactory::new();
+    }
 
     /**
      * Get the parent reviewable model (product or post).
@@ -40,5 +46,13 @@ class Address extends Model
     public function addressable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Return the user relationship.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

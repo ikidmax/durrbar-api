@@ -3,6 +3,7 @@
 namespace Modules\Address\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,9 +16,8 @@ class AddressController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        // return view('user::index');
         $user = $request->user();
         $addresses = AddressResource::collection($user->addresses);
 
@@ -53,7 +53,7 @@ class AddressController extends Controller
             'address_type' => $request->address_type,
         ]);
 
-        return response()->json(['message' => 'Success', 'address' => new AddressResource($address)], Response::HTTP_OK);
+        return response()->json(['message' => 'Success', 'address' => $address], Response::HTTP_OK);
     }
 
     /**
@@ -96,7 +96,7 @@ class AddressController extends Controller
 
         $address->save();
 
-        return response()->json(['message' => 'Success', 'address' => new AddressResource($address)], Response::HTTP_OK);
+        return response()->json(['message' => 'Success', 'address' => $address], Response::HTTP_OK);
     }
 
     /**

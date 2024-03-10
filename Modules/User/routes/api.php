@@ -47,57 +47,57 @@ use Modules\User\App\Http\Resources\UserResource;
 Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 
     // Authentication routes
-    // Route::prefix('auth')->group(function () {
+    Route::prefix('auth')->group(function () {
 
-    // Retrieve the verification limiter configuration for verification attempts
-    $verificationLimiter = config('fortify.limiters.verification', '6,1');
+        // Retrieve the verification limiter configuration for verification attempts
+        $verificationLimiter = config('fortify.limiters.verification', '6,1');
 
-    Route::withoutMiddleware('auth:sanctum')->group(function () {
-        //     // Route for user login
-        Route::prefix('login')->group(function () {
-            //         // Retrieve the limiter configuration for login attempts
-            $limiter = config('fortify.limiters.login');
-            Route::post('/', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
-                'guest:' . config('fortify.guard'),  // Only guests (non-authenticated users) are allowed
-                $limiter ? 'throttle:' . $limiter : null,  // Throttle login attempts if limiter is configured
-            ]));
-            Route::post('/callback', [SocialiteController::class, 'handleProviderCallback']);
-            Route::middleware('web')->get('/redirect/{provider}', function ($provider) {
-                return Socialite::driver($provider)->redirect();
+        Route::withoutMiddleware('auth:sanctum')->group(function () {
+            //     // Route for user login
+            Route::prefix('login')->group(function () {
+                //         // Retrieve the limiter configuration for login attempts
+                $limiter = config('fortify.limiters.login');
+                Route::post('/', [AuthenticatedSessionController::class, 'store'])->middleware(array_filter([
+                    'guest:' . config('fortify.guard'),  // Only guests (non-authenticated users) are allowed
+                    $limiter ? 'throttle:' . $limiter : null,  // Throttle login attempts if limiter is configured
+                ]));
+                Route::post('/callback', [SocialiteController::class, 'handleProviderCallback']);
+                Route::middleware('web')->get('/redirect/{provider}', function ($provider) {
+                    return Socialite::driver($provider)->redirect();
+                });
             });
+
+            //     // Registration...
+            Route::post('/register', [RegisteredUserController::class, 'store'])
+                ->middleware(['guest:' . config('fortify.guard')]);  // Only guests (non-authenticated users) are allowed
+            // Password Reset...
+            Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+                ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
+                ->name('password.email');  // Name for the route
+            Route::post('/reset-password', [NewPasswordController::class, 'store'])
+                ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
+                ->name('password.update');  // Name for the route
+
+            //     // Two Factor Authentication...
+            $twoFactorLimiter = config('fortify.limiters.two-factor');
+            Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
+                ->middleware(array_filter([
+                    'guest:' . config('fortify.guard'),
+                    $twoFactorLimiter ? 'throttle:' . $twoFactorLimiter : null,
+                ]));
         });
 
-        //     // Registration...
-        Route::post('/register', [RegisteredUserController::class, 'store'])
-            ->middleware(['guest:' . config('fortify.guard')]);  // Only guests (non-authenticated users) are allowed
-        // Password Reset...
-        Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-            ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
-            ->name('password.email');  // Name for the route
-        Route::post('/reset-password', [NewPasswordController::class, 'store'])
-            ->middleware(['guest:' . config('fortify.guard')])  // Only guests (non-authenticated users) are allowed
-            ->name('password.update');  // Name for the route
+        // Email Verification...
+        // Route to v email verification notification
+        Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+            ->name('verification.verify');
+        // // Route to resend email verification notification
+        Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware([
+            'throttle:' . $verificationLimiter // Throttle resend email attempts
+        ]);
 
-        //     // Two Factor Authentication...
-        $twoFactorLimiter = config('fortify.limiters.two-factor');
-        Route::post('/two-factor-challenge', [TwoFactorAuthenticatedSessionController::class, 'store'])
-            ->middleware(array_filter([
-                'guest:' . config('fortify.guard'),
-                $twoFactorLimiter ? 'throttle:' . $twoFactorLimiter : null,
-            ]));
+        Route::post('/logout', [LogoutController::class, 'destroy']);
     });
-
-    // Email Verification...
-    // Route to v email verification notification
-    Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
-        ->name('verification.verify');
-    // // Route to resend email verification notification
-    Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware([
-        'throttle:' . $verificationLimiter // Throttle resend email attempts
-    ]);
-
-    Route::post('/logout', [LogoutController::class, 'destroy']);
-    // });
 
     // User routes
     Route::prefix('user')->middleware(['verified'])->group(function () {

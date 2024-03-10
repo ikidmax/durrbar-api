@@ -1,0 +1,29 @@
+{
+    "name": "durrbar/comment",
+    "description": "",
+    "authors": [
+        {
+            "name": "Kid Max",
+            "email": "kidmax285@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {}
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Comment\\": "",
+            "Modules\\Comment\\App\\": "app/",
+            "Modules\\Comment\\Database\\Factories\\": "database/factories/",
+            "Modules\\Comment\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\Comment\\Tests\\": "tests/"
+        }
+    }
+}
