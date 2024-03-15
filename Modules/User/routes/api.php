@@ -104,7 +104,7 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
 
         Route::get('/me', function (Request $request) {
             $user = new UserResource($request->user());
-            return response()->json(['data' => ['user' => $user]], Response::HTTP_OK);
+            return response()->json(['user' => $user], Response::HTTP_OK);
         });
 
         // Profile Information...

@@ -16,10 +16,12 @@ return new class extends Migration
 
             $table->string('title');
             $table->string('publish')->default('draft');
+            $table->boolean('featured')->default(false);
             $table->longText('content');
             $table->string('cover_url');
             $table->string('author_id');
             $table->text('description');
+            $table->string('duration');
             $table->integer('total_views');
             $table->integer('total_shares');
             $table->integer('total_favorites');

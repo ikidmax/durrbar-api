@@ -19,9 +19,11 @@ use Modules\Order\App\Models\Order;
 use Modules\Review\App\Models\Review;
 use Modules\User\Database\Factories\UserFactory;
 use Modules\Wishlist\App\Models\Wishlist;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use HasRoles;
     use HasFactory;
     use HasUuids;
     use Notifiable;

@@ -22,4 +22,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::apiResource('posts', PostController::class)->names('post')->only([
         'index', 'show'
     ]);
+    Route::get('/post/featureds', [PostController::class, 'featured']);
+
+    Route::get('/post/latest', [PostController::class, 'latest']);
 });

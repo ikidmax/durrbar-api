@@ -162,6 +162,8 @@ return [
         App\Providers\FortifyServiceProvider::class,
 
         Nwidart\Modules\LaravelModulesServiceProvider::class,
+
+        Spatie\Permission\PermissionServiceProvider::class,
         /*
          * Custom Service Providers...
          */

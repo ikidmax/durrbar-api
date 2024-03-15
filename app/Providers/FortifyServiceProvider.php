@@ -29,19 +29,18 @@ class FortifyServiceProvider extends ServiceProvider
         {
             public function toResponse($request)
             {
-                if ($request->wantsJson()) {
-                    $user = User::where('email', $request->email)->first();
-                    $token = $user->createToken('token')->plainTextToken;
-                    $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
-                    return response()->json([
+
+                $user = new UserResource(User::where('email', $request->email)->first());
+                $token = $user->createToken('token')->plainTextToken;
+                $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
+                return $request->wantsJson()
+                    ? response()->json([
                         "message" => "You are successfully logged in",
-                        'data' => ['user' => $user],
-                    ], Response::HTTP_OK)->withCookie($cookie);
-                }
-                return redirect()->intended(Fortify::redirects('login'));
+                        'user' => $user,
+                    ], Response::HTTP_OK)->withCookie($cookie)
+                    :   redirect()->intended(Fortify::redirects('login'));
             }
         });
-
 
         //customized register response
         $this->app->instance(RegisterResponse::class, new class implements RegisterResponse

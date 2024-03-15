@@ -29,7 +29,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:14'],
-            'birthday',
+            'birthday' => 'required|date_format:Y-m-d',
             'gender',
 
         ])->validateWithBag('updateProfileInformation');
