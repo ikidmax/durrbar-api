@@ -18,7 +18,10 @@
         "league/flysystem-aws-s3-v3": "3.0",
         "nwidart/laravel-modules": "^10.0",
         "spatie/laravel-permission": "^6.4",
-        "spatie/laravel-query-builder": "^5.8"
+        "spatie/laravel-query-builder": "^5.8",
+        "spatie/laravel-searchable": "^1.12",
+        "spatie/laravel-sluggable": "^3.6",
+        "spatie/laravel-tags": "^4.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -3,26 +3,20 @@
 namespace Modules\Tag\App\Models;
 
 use Modules\Post\App\Models\Post;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Modules\Tag\Database\factories\TagFactory;
+use Spatie\Tags\Tag as TagsTag;
 
-class Tag extends Model
+class Tag extends TagsTag
 {
-    use HasFactory;
     use HasUuids;
 
     /**
      * The table associated with the model.
      */
     protected $table = 'tags';
-
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected $fillable = ['name'];
 
     protected static function newFactory(): TagFactory
     {

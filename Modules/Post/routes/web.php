@@ -13,7 +13,3 @@ use Modules\Post\App\Http\Controllers\PostController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('post', PostController::class)->names('post');
-});

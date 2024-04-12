@@ -13,7 +13,3 @@ use Modules\Comment\App\Http\Controllers\CommentController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('comment', CommentController::class)->names('comment');
-});

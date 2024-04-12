@@ -13,7 +13,3 @@ use Modules\Tag\App\Http\Controllers\TagController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('tag', TagController::class)->names('tag');
-});

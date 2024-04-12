@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Comment\App\Models\Contracts\IsComment;
@@ -28,7 +29,7 @@ class Comment extends Model implements IsComment
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['content'];
+    protected $fillable = ['content', 'user_id', 'parent_id'];
 
     protected static function newFactory(): CommentFactory
     {
@@ -48,16 +49,14 @@ class Comment extends Model implements IsComment
      */
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function parent(): BelongsTo
+    /**
+     * Return the replies relationship.
+     */
+    public function replies(): MorphMany
     {
-        return $this->belongsTo(static::class, 'parent_id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(static::class, 'parent_id');
+        return $this->morphMany(static::class, 'commentable');
     }
 }

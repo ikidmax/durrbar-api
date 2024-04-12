@@ -6,35 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tags', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->string('name');
+            $table->json('name');
+            $table->json('slug');
+            $table->string('type', 125)->nullable();
+            $table->integer('order_column')->nullable();
 
             $table->timestamps();
-            $table->softDeletes();
         });
 
         Schema::create('taggables', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('tag_id');
+            $table->foreignUuid('tag_id')->constrained()->cascadeOnDelete();
+
             $table->uuidMorphs('taggable');
-            $table->timestamps();
-            $table->softDeletes();
+
+            $table->unique(['tag_id', 'taggable_id', 'taggable_type']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('tags');
         Schema::dropIfExists('taggables');
+        Schema::dropIfExists('tags');
     }
 };

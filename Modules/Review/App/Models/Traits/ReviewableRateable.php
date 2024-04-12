@@ -24,11 +24,11 @@ trait ReviewableRateable
         $oneStar = $this->reviews()->where('rating', '=', 1)->count();
 
         return [
-            ['value' => '5star', 'number' => $fiveStar],
-            ['value' => '4star', 'number' => $fourStar],
-            ['value' => '3star', 'number' => $threeStar],
-            ['value' => '2star', 'number' => $twoStar],
-            ['value' => '1star', 'number' => $oneStar],
+            ['name' => '5star', 'count' => $fiveStar],
+            ['name' => '4star', 'count' => $fourStar],
+            ['name' => '3star', 'count' => $threeStar],
+            ['name' => '2star', 'count' => $twoStar],
+            ['name' => '1star', 'count' => $oneStar],
         ];
     }
 }

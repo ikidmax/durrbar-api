@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Tag\App\Http\Requests\TagRequest;
+use Modules\Tag\App\Models\Tag;
 
 class TagController extends Controller
 {
@@ -16,9 +17,9 @@ class TagController extends Controller
      */
     public function index(): JsonResponse
     {
-        //
+        $tags = Tag::all();
 
-        return response()->json($this->data);
+        return response()->json(['tags' => $tags]);
     }
 
     /**

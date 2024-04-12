@@ -15,10 +15,10 @@ return new class extends Migration
             $table->uuid('id')->primary();
 
             $table->string('title');
+            $table->string('slug');
             $table->string('publish')->default('draft');
             $table->boolean('featured')->default(false);
             $table->longText('content');
-            $table->string('cover_url');
             $table->string('author_id');
             $table->text('description');
             $table->string('duration');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('total_favorites');
 
             $table->string('meta_title');
-            $table->string('meta_keywords');
+            $table->json('meta_keywords');
             $table->string('meta_description');
 
             $table->timestamps();

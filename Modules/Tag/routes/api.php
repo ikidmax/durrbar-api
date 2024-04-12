@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Tag\App\Http\Controllers\TagController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,6 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('tag', fn (Request $request) => $request->user())->name('tag');
+Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.dashboard.')->group(function () {
+    Route::apiResource('dashboard/tag', TagController::class);
 });

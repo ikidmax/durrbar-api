@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Modules\Comment\App\Models\Comment;
 
 class CommentController extends Controller
 {
@@ -48,9 +49,9 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Comment $comment)
     {
-        //
-        return response()->json($this->data);
+        $comment->delete();
+        return response()->json(['message' => 'Deleted']);
     }
 }

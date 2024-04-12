@@ -13,7 +13,3 @@ use Modules\Review\App\Http\Controllers\ReviewController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('review', ReviewController::class)->names('review');
-});

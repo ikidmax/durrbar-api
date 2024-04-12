@@ -13,7 +13,3 @@ use Modules\Product\App\Http\Controllers\ProductController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('product', ProductController::class)->names('product');
-});

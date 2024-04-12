@@ -13,7 +13,3 @@ use Modules\Color\App\Http\Controllers\ColorController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('color', ColorController::class)->names('color');
-});

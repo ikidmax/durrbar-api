@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('images', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuidMorphs('imageable');
+            $table->string('path');
 
             $table->timestamps();
             $table->softDeletes();

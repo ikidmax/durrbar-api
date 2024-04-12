@@ -38,15 +38,11 @@ class ProductController extends Controller
     public function show($id): JsonResponse
     {
         //
-        $product = Product::with('reviews')->find($id);
+        $product = Product::with('ratings')->firstOrFail($id);
 
-        if (!$product) {
-            return response()->json(['error' => 'Product not found'], 404);
-        }
+        $product->reviews = $product->reviews()->paginate(5); // Adjust the pagination size as needed
 
-        $reviews = $product->reviews()->paginate(5); // Adjust the pagination size as needed
-
-        return response()->json(['product' => $product, 'reviews' => $reviews]);
+        return response()->json(['product' => $product]);
     }
 
     /**

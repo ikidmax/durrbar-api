@@ -3,7 +3,7 @@
 namespace Modules\Comment\App\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -13,9 +13,7 @@ interface IsComment
 {
     public function commentable(): MorphTo;
 
-    public function parent(): BelongsTo;
-
-    public function children(): HasMany;
+    public function replies(): MorphMany;
 
     public function user(): BelongsTo;
 }

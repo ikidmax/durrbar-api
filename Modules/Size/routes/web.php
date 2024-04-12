@@ -13,7 +13,3 @@ use Modules\Size\App\Http\Controllers\SizeController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('size', SizeController::class)->names('size');
-});

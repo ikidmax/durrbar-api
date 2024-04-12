@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Illuminate\Support\Facades\Storage;
 use Modules\Image\Database\factories\ImageFactory;
 
 class Image extends Model
@@ -17,9 +17,26 @@ class Image extends Model
     use SoftDeletes;
 
     /**
+     * The table associated with the model.
+     */
+    protected $table = 'images';
+
+    protected $appends = ['url'];
+
+    /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = ['path'];
+
+    /**
+     * Get the URL to the photo
+     * 
+     * @return string
+     */
+    public function getUrlAttribute()
+    {
+        return  Storage::url($this->path);
+    }
 
     protected static function newFactory(): ImageFactory
     {

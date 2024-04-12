@@ -13,7 +13,3 @@ use Modules\Image\App\Http\Controllers\ImageController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('image', ImageController::class)->names('image');
-});
