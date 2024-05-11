@@ -33,7 +33,7 @@ Route::prefix('v1')->name('api.')->group(function () {
     Route::apiResource('posts', PostController::class)->scoped(['post' => 'slug'])->only(['index', 'show']);
     Route::apiResource('posts.comments', PostsCommentsController::class)->only(['index'])->scoped(['post' => 'slug']);
 
-    Route::controller(PostController::class)->name('post.')->group(function () {
+    Route::controller(PostController::class)->name('posts.')->group(function () {
 
         Route::get('/post/featureds', 'featured')->name('featured');
 

@@ -1,0 +1,31 @@
+{
+    "name": "durrbar/ecommerce",
+    "description": "",
+    "authors": [
+        {
+            "name": "Kid Max",
+            "email": "kidmax285@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\ECommerce\\": "",
+            "Modules\\ECommerce\\App\\": "app/",
+            "Modules\\ECommerce\\Database\\Factories\\": "database/factories/",
+            "Modules\\ECommerce\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Modules\\ECommerce\\Tests\\": "tests/"
+        }
+    }
+}

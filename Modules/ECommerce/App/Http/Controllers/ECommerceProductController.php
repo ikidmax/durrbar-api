@@ -1,26 +1,28 @@
 <?php
 
-namespace Modules\Post\App\Http\Controllers;
+namespace Modules\ECommerce\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\Post\App\Http\Resources\PostResource;
-use Modules\Post\App\Models\Post;
+use Modules\ECommerce\App\Http\Requests\ECommerceProductRequest;
+use Modules\ECommerce\App\Http\Resources\ECommerceProductCollection;
+use Modules\ECommerce\App\Http\Resources\ECommerceProductResource;
+use Modules\ECommerce\App\Models\ECommerceProduct;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\Searchable\ModelSearchAspect;
 use Spatie\Searchable\Search;
+use Spatie\Tags\Tag;
 
 // use Modules\Tag\App\Models\Tag;
 
-class PostController extends Controller
+class ECommerceProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $posts = QueryBuilder::for(Post::class)->where('publish', 'published')->allowedFields(
+        $products = QueryBuilder::for(ECommerceProduct::class)->where('publish', 'published')->allowedFields(
             'id',
             'slug',
             'title',
@@ -31,22 +33,22 @@ class PostController extends Controller
             'total_shares'
         )->with(['author', 'cover'])->paginate(10);
 
-        return response()->json(['posts' => $posts]);
+        return response()->json(['Products' => $products]);
     }
 
     /**
      * Show the specified resource.
      */
-    public function show(Post $post): JsonResponse
+    public function show(ECommerceProduct $product): JsonResponse
     {
-        $post->load(['author', 'cover', 'tags'])->loadCount(['comments as total_comments'])->firstOrFail();
+        $product->load(['author', 'cover', 'tags'])->loadCount(['comments as total_comments'])->firstOrFail();
 
-        return response()->json(['post' => new PostResource($post)]);
+        return response()->json(['Product' => new ECommerceProductResource($product)]);
     }
 
     public function featured(): JsonResponse
     {
-        $featureds = Post::where('featured', 1)->select(
+        $featureds = ECommerceProduct::where('featured', 1)->select(
             'id',
             'slug',
             'title',
@@ -61,7 +63,7 @@ class PostController extends Controller
 
     public function latest(): JsonResponse
     {
-        $latest = Post::select(
+        $latest = ECommerceProduct::select(
             'id',
             'slug',
             'title',
@@ -81,11 +83,7 @@ class PostController extends Controller
         $query = $request->query('query');
 
         $results = (new Search())
-            ->registerModel(Post::class, function (ModelSearchAspect $modelSearchAspect) {
-                $modelSearchAspect
-                    ->addSearchableAttribute('title')
-                    ->with('cover');
-            })
+            ->registerModel(ECommerceProduct::class, 'title')
             ->search($query);
 
         $newres = [];
@@ -94,6 +92,6 @@ class PostController extends Controller
             $newres[] = $result->searchable;
         }
 
-        return response()->json(['results' => $newres]);
+        return response()->json(['results' => $results]);
     }
 }

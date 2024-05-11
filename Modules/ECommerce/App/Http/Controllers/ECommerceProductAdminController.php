@@ -1,23 +1,23 @@
 <?php
 
-namespace Modules\Post\App\Http\Controllers;
+namespace Modules\ECommerce\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Modules\Post\App\Models\Post;
+use Modules\ECommerce\App\Models\ECommerceProduct;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class PostAdminController extends Controller
+class ECommerceProductAdminController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(): JsonResponse
     {
-        $posts = QueryBuilder::for(Post::class)
+        $posts = QueryBuilder::for(ECommerceProduct::class)
             ->allowedFilters([AllowedFilter::exact('publish')])
             ->allowedSorts('created_at')
             ->allowedFields(
@@ -41,7 +41,7 @@ class PostAdminController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $post = new Post;
+        $post = new ECommerceProduct;
 
         $tags = $request->input('tags', []);
         $post->description = $request->description;
@@ -80,7 +80,7 @@ class PostAdminController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $post = Post::where('id', $id)->with(['author', 'tags', 'cover'])->withCount(['comments as total_comments'])->firstOrFail();
+        $post = ECommerceProduct::where('id', $id)->with(['author', 'tags', 'cover'])->withCount(['comments as total_comments'])->firstOrFail();
 
         $post->comments = $post->comments()->with('user', 'replies')->paginate(10); // 10 comments per page
 
@@ -92,7 +92,7 @@ class PostAdminController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Post $post): JsonResponse
+    public function update(Request $request, ECommerceProduct $post): JsonResponse
     {
         $tags = $request->input('tags', []);
         $post->description = $request->description;
@@ -109,18 +109,16 @@ class PostAdminController extends Controller
 
         // Delete existing image
         if (isset($request->cover_url)) {
-            $coverUrl = json_decode(json_encode($request->cover_url), false);
-            if (isset($coverUrl['uploadKey'])) {
-                $uploadKey = $coverUrl['uploadKey'];
-                if (isset($post->cover->path)) {
-                    if ($post->cover->path !== $uploadKey) {
-                        Storage::delete($post->cover->path);
-                        $post->cover()->delete();
-                    }
+            $coverUrl = json_decode(json_encode($request->cover_url), true);
+            $uploadKey = $coverUrl['uploadKey'];
+            if (isset($post->cover->path)) {
+                if ($post->cover->path !== $uploadKey) {
+                    Storage::delete($post->cover->path);
+                    $post->cover()->delete();
                 }
-
-                $post->cover()->create(['path' => $uploadKey]);
             }
+
+            $post->cover()->create(['path' => $uploadKey]);
         }
 
         // Fetch the post again with relationships
@@ -157,7 +155,7 @@ class PostAdminController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post): JsonResponse
+    public function destroy(ECommerceProduct $post): JsonResponse
     {
         if ($post->cover) {
             Storage::delete($post->cover->path);
@@ -166,6 +164,6 @@ class PostAdminController extends Controller
 
         $post->delete();
 
-        return response()->json(['message' => 'deleted']);
+        return response()->json(['message' => 'Deleted']);
     }
 }

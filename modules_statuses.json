@@ -11,5 +11,6 @@
     "Product": true,
     "Review": true,
     "Size": true,
-    "Wishlist": true
+    "Wishlist": true,
+    "ECommerce": true
 }

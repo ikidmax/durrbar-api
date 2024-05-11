@@ -60,7 +60,7 @@ class Post extends Model implements Searchable
 
     public function getSearchResult(): SearchResult
     {
-        $url = route('api.post.show', $this->slug);
+        $url = route('api.posts.show', $this->slug);
 
         return new \Spatie\Searchable\SearchResult(
             $this,
