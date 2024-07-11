@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Post\App\Http\Controllers;
+namespace Modules\ECommerce\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Modules\Comment\App\Models\Comment;
 use Modules\Post\App\Models\Post;
 
-class PostsCommentsRepliesController extends Controller
+class ProductsCommentsRepliesController extends Controller
 {
     /**
      * Store a newly created resource in storage.

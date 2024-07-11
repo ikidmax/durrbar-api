@@ -5,6 +5,7 @@ namespace Modules\User\App\Actions\Profile;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Modules\User\App\Contracts\UpdatesUserPhoto;
+use Illuminate\Http\UploadedFile;
 
 class UpdateProfilePhoto implements UpdatesUserPhoto
 {
@@ -13,15 +14,14 @@ class UpdateProfilePhoto implements UpdatesUserPhoto
      *
      * @param  array<string, string>  $input
      */
-    public function update(User $user, array $input): void
+    public function update(User $user, $file): void
     {
-        Validator::make($input, [
+        Validator::make($file, [
             'photo' => ['required', 'mimes:jpg,jpeg,png', 'max:1024'],
         ])->validate();
- 
-        if (isset($input['photo'])) {
-            $user->updateProfilePhoto($input['photo']);
+
+        if (isset($file['photo'])) {
+            $user->updateProfilePhoto($file['photo'], $user);
         }
-    
     }
 }

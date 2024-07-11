@@ -3,51 +3,59 @@
 namespace Modules\User\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Modules\User\App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Facades\Validator;
 
 class SocialiteController extends Controller
 {
-    public function handleProviderCallback(Request $request)
+    /**
+     * Redirect the user to the OAuth provider.
+     *
+     * @param  string  $provider
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function redirect($provider)
     {
-        $validator = Validator::make($request->only('provider', 'access_provider_token'), [
-            'provider' => ['required', 'string'],
-            'access_provider_token' => ['required', 'string']
-        ]);
+        return Socialite::driver($provider)->stateless()->redirect();
+    }
 
-        if ($validator->fails()) return response()->json($validator->errors(), Response::HTTP_BAD_REQUEST);
+    /**
+     * Obtain the user information from the provider.
+     *
+     * @param  string  $provider
+     * @return \Illuminate\Http\Response
+     */
+    public function callback($provider)
+    {
+        try {
+            $socialUser = Socialite::driver($provider)->stateless()->user();
+        } catch (\Exception $e) {
+            return Redirect::to('/login')->withErrors('Unable to login using ' . $provider . '. Please try again.');
+        }
 
-        $provider = $request->provider;
+        // Check if the user already exists
+        $user = User::where('email', $socialUser->getEmail())->first();
 
-        $validated = $this->validateProvider($provider);
-
-        if (!is_null($validated)) return $validated;
-
-        $providerUser = Socialite::driver($provider)->userFromToken($request->access_provider_token);
-
-        $user = User::firstOrCreate(
-            [
-                'email' => $providerUser->getEmail()
-            ],
-            [
-                'name' => $providerUser->getName(),
-            ]
-        );
+        if (!$user) {
+            // Create a new user
+            $user = User::create([
+                'name' => $socialUser->getName(),
+                'email' => $socialUser->getEmail(),
+                'provider' => $provider,
+                'provider_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar(),
+            ]);
+        }
 
         $token = $user->createToken('token')->plainTextToken;
 
-        $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
+        $cookie = cookie('access_token', $token, 60 * 24 * 7, secure: true); // 7 day
 
-        return response(['message' => 'Success', 'data' => ['user' => $user]], Response::HTTP_OK)->withCookie($cookie);
-    }
+        // Log the user in
+        Auth::login($user, true);
 
-    protected function validateProvider($provider)
-    {
-        if (!in_array($provider, ['facebook', 'google'])) {
-            return response()->json(["message" => 'You can only login via facebook or google account'], Response::HTTP_BAD_REQUEST);
-        }
+        return redirect()->away(env('FRONTEND_URL'))->withCookie($cookie);
     }
 }

@@ -6,6 +6,7 @@ namespace App\Providers;
 
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -32,11 +33,14 @@ class FortifyServiceProvider extends ServiceProvider
 
                 $user = new UserResource(User::where('email', $request->email)->first());
                 $token = $user->createToken('token')->plainTextToken;
-                $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
+                $cookie = cookie('access_token', $token, 60 * 24 * 7, secure: true); // 7 day
+
                 return $request->wantsJson()
                     ? response()->json([
                         "message" => "You are successfully logged in",
                         'user' => $user,
+                        'cookie' => $cookie,
+                        'access_token' => $token
                     ], Response::HTTP_OK)->withCookie($cookie)
                     :   redirect()->intended(Fortify::redirects('login'));
             }
@@ -49,11 +53,13 @@ class FortifyServiceProvider extends ServiceProvider
             {
                 $user = new UserResource(User::where('email', $request->email)->first());
                 $token = $user->createToken('token')->plainTextToken;
-                $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
+                $cookie = cookie('access_token', $token, 60 * 24 * 7, secure: true); // 7 day
                 return $request->wantsJson()
                     ? response()->json([
                         "message" => "Registration successful, verify your email address.",
                         'user' => $user,
+                        'cookie' => $cookie,
+                        'access_token' => $token
                     ], Response::HTTP_OK)->withCookie($cookie)
                     : redirect()->intended(Fortify::redirects('register'));
             }
@@ -64,8 +70,10 @@ class FortifyServiceProvider extends ServiceProvider
         {
             public function toResponse($request)
             {
+                $cookie = Cookie::forget('access_token');
+
                 return $request->wantsJson()
-                    ? response()->json(['message' => 'Succesfully logged out'], Response::HTTP_OK)
+                    ? response()->json(['message' => 'Succesfully logged out'], Response::HTTP_OK)->withCookie($cookie)
                     : redirect(Fortify::redirects('logout', '/'));
             }
         });

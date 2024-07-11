@@ -3,6 +3,7 @@
 namespace Modules\User\App\Models\Traits;
 
 use Illuminate\Http\UploadedFile;
+use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
 trait HasProfilePhoto
@@ -13,25 +14,40 @@ trait HasProfilePhoto
      * @param \Illuminate\Http\UploadedFile $photo
      * @return void
      */
-    public function updateProfilePhoto(UploadedFile $photo)
+    public function updateProfilePhoto(UploadedFile $photo, User $user)
     {
-        tap($this->photo, function ($previous) use ($photo) {
-            // Define custom name for avatar
-            $extension = $photo->getClientOriginalExtension();
-            $originalName = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
-            $fileName = $originalName . '_' . time() . '_' . uniqid() . '.' . $extension;
-            // Upload & save photo
-            $this->forceFill([
-                'photo' => $photo->storePubliclyAS(
-                    '/uploads/user/avater',
-                    $fileName
-                ),
-            ])->save();
-            // Delete if avatar exist
-            if ($previous) {
-                Storage::delete($previous);
-            }
-        });
+        $previousPhoto = $user->photo;
+
+        // Define custom name for avatar
+        $extension = $photo->getClientOriginalExtension();
+        $originalName = pathinfo($photo->getClientOriginalName(), PATHINFO_FILENAME);
+        $fileName = $originalName . '_' . time() . '_' . uniqid() . '.' . $extension;
+
+        if (extension_loaded('imagick')) {
+            // Resize and compress the photo using Imagick
+            $image = \Intervention\Image\Laravel\Facades\Image::make($photo->getPathname())
+                ->resize(null, 300, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                })
+                ->encode($extension, 75); // 75 is the quality percentage
+
+            // Store the image
+            $path = 'uploads/user/avatar/' . $fileName;
+            Storage::put($path, (string) $image);
+        } else {
+            // Directly upload the photo without resizing
+            $path = $photo->storeAs('uploads/user/avatar', $fileName);
+        }
+
+        // Update user's photo path
+        $user->photo = $path;
+        $user->save();
+
+        // Delete previous photo if it exists
+        if ($previousPhoto) {
+            Storage::delete($previousPhoto);
+        }
     }
 
     /**

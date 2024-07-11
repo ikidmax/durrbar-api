@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('token')->plainTextToken;
 
-        $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
+        $cookie = cookie('access_token', $token, 60 * 24 * 7, secure: true); // 7 day
 
         return response(['message' => 'Success', 'data' => ['user' => $user]], Response::HTTP_OK)->withCookie($cookie);
     }
@@ -50,12 +50,12 @@ class AuthController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             $user = $request->user();
-            $user->photo = Storage::url($user->photo);
-            $token = $user->createToken('token')->plainTextToken;
-            $cookie = cookie('access_token', $token, 60 * 24 * 7); // 7 day
-            return response(['message' => 'Success', 'data' => ['user' => $user]], Response::HTTP_OK)->withCookie($cookie);
 
-            // return response()->json($data, 200);
+            $token = $user->createToken('token')->plainTextToken;
+
+            $cookie = cookie('access_token', $token, 60 * 24 * 7, secure: true); // 7 day
+
+            return response(['message' => 'Success', 'data' => ['user' => $user]], Response::HTTP_OK)->withCookie($cookie);
         }
 
         return response(['message' => 'Invalid credentials!'], Response::HTTP_UNAUTHORIZED);
@@ -64,7 +64,6 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = $request->user();
-        $user->photo = Storage::url($user->photo);
 
         return response(['data' => ['user' => $user]], Response::HTTP_OK);
     }

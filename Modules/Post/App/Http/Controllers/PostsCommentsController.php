@@ -14,7 +14,7 @@ class PostsCommentsController extends Controller
      */
     public function index(Post $post): JsonResponse
     {
-        $comments = $post->comments()->latest()->with('user', 'replies.user')->paginate(10); // 10 comments per page
+        $comments = $post->comments()->latest()->with('user', 'replies.user')->paginate(2); // 10 comments per page
 
         return response()->json(['comments' => $comments]);
     }

@@ -61,10 +61,8 @@ Route::middleware(['auth:sanctum'])->prefix('v1')->group(function () {
                     'guest:' . config('fortify.guard'),  // Only guests (non-authenticated users) are allowed
                     $limiter ? 'throttle:' . $limiter : null,  // Throttle login attempts if limiter is configured
                 ]));
-                Route::post('/callback', [SocialiteController::class, 'handleProviderCallback']);
-                Route::middleware('web')->get('/redirect/{provider}', function ($provider) {
-                    return Socialite::driver($provider)->redirect();
-                });
+                Route::get('/callback/{provider}', [SocialiteController::class, 'callback']);
+                Route::get('/redirect/{provider}', [SocialiteController::class, 'redirect']);
             });
 
             //     // Registration...

@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\ECommerce\App\Http\Controllers\ECommerceProductAdminController;
 use Modules\ECommerce\App\Http\Controllers\ECommerceProductController;
+use Modules\ECommerce\App\Http\Controllers\ProductsCommentsController;
+use Modules\ECommerce\App\Http\Controllers\ProductsCommentsRepliesController;
 use Modules\ECommerce\App\Models\ECommerceProduct;
 
 /*
