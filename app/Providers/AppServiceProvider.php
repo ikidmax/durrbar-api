@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Observers\PostTagSyncObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Post;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,5 +23,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+
+        Post::observe(PostTagSyncObserver::class);
     }
 }

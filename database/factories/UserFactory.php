@@ -17,6 +17,11 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     /**
+     * The name of the factory's corresponding model.
+     */
+    protected $model = \App\Models\User\User::class;
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -24,11 +29,16 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
+            'first_name' => fake()->firstName(),
+            'last_name' => fake()->lastName(),
+            'photo' => 'uploads/user/avater/_MG_82041_1707802961_65cb0151779a8.jpg',
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'phone' => fake()->bothify('880-1####-#####'),
+            'birthday' => fake()->date(),
+            'gender' => $this->faker->randomElement(['male', 'female', 'other']),
         ];
     }
 

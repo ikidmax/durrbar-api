@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return redirect(env("FRONTEND_URL"));
+    return redirect()->away(env("FRONTEND_URL"));
 });
 
 Route::get('/cc', function () {

@@ -21,19 +21,19 @@ class CustomPolymorphicTypesServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::enforceMorphMap([
-            'address' => 'Modules\Address\App\Models\Address',
+            'address' => 'App\Models\Address',
             'color' => 'Modules\Color\App\Models\Color',
-            'comment' => 'Modules\Comment\App\Models\Comment',
-            'image' => 'Modules\Image\App\Models\Image',
-            'invoice' => 'Modules\Invoice\App\Models\Invoice',
-            'order' => 'Modules\Order\App\Models\Order',
-            'post' => 'Modules\Post\App\Models\Post',
-            'product' => 'Modules\Product\App\Models\Product',
-            'review' => 'Modules\Review\App\Models\Review',
+            'comment' => 'App\Models\Comment',
+            'image' => 'App\Models\Image',
+            'invoice' => 'App\Models\Invoice\Invoice',
+            'order' => 'App\Models\Order',
+            'post' => 'App\Models\Post',
+            'product' => 'App\Models\ECommerce\ECommerceProduct',
+            'review' => 'App\Models\Review',
             'size' => 'Modules\Size\App\Models\Size',
-            'tag' => 'Modules\Tag\App\Models\Tag',
-            'user' => 'Modules\User\App\Models\User',
-            'wishlist' => 'Modules\Wishlist\App\Models\Wishlist',
+            'tag' => 'App\Models\Tag',
+            'user' => 'App\Models\User\User',
+            'wishlist' => 'App\Models\Wishlist',
         ]);
     }
 }

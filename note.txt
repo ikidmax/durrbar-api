@@ -1,0 +1,31 @@
+API Resources
+
+Conditional Attributes
+'secret' => $this->when($request->user()->isAdmin(), 'secret-value'),
+'secret' => $this->when($request->user()->isAdmin(), function () {
+    return 'secret-value';
+}),
+'name' => $this->whenHas('name'),
+'name' => $this->whenNotNull($this->name),
+$this->mergeWhen($request->user()->isAdmin(), [
+            'first-secret' => 'value',
+            'second-secret' => 'value',
+        ]),
+
+
+Conditional Relationships
+'posts' => PostResource::collection($this->whenLoaded('posts')),
+'posts_count' => $this->whenCounted('posts'),
+'words_avg' => $this->whenAggregated('posts', 'words', 'avg'),
+'words_sum' => $this->whenAggregated('posts', 'words', 'sum'),
+'words_min' => $this->whenAggregated('posts', 'words', 'min'),
+'words_max' => $this->whenAggregated('posts', 'words', 'max'),
+'expires_at' => $this->whenPivotLoaded('role_user', function () {
+            return $this->pivot->expires_at;
+        }),
+'expires_at' => $this->whenPivotLoaded(new Membership, function () {
+    return $this->pivot->expires_at;
+}),
+'expires_at' => $this->whenPivotLoadedAs('subscription', 'role_user', function () {
+            return $this->subscription->expires_at;
+        }),

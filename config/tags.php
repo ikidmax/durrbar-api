@@ -11,7 +11,7 @@ return [
     /*
      * The fully qualified class name of the tag model.
      */
-    'tag_model' => \Modules\Tag\App\Models\Tag::class,
+    'tag_model' => \App\Models\Tag::class,
 
     /*
      * The name of the table associated with the taggable morph relation.

@@ -14,3 +14,12 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+
+
+
+Route::name('api.')->prefix('v1')->group(function () {
+    require __DIR__ . '/v1/user.php';
+    require __DIR__ . '/v1/address.php';
+    require __DIR__ . '/v1/post.php';
+});

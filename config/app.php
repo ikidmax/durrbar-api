@@ -70,7 +70,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -161,7 +161,7 @@ return [
          */
         App\Providers\FortifyServiceProvider::class,
 
-        Nwidart\Modules\LaravelModulesServiceProvider::class,
+        // Nwidart\Modules\LaravelModulesServiceProvider::class,
 
         Spatie\Permission\PermissionServiceProvider::class,
         /*

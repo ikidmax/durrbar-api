@@ -13,17 +13,17 @@ class Authenticate extends Middleware
      */
     protected function redirectTo(Request $request): ?string
     {
-        return $request->expectsJson() ? (env('FRONTEND_URL') . '/auth/login') : route('login');
+        return $request->expectsJson() ? redirect()->away((env('FRONTEND_URL') . '/auth/login')) : route('login');
     }
 
-    public function handle($request, Closure $next, ...$guards)
-    {
-        if ($jwt = $request->cookie('access_token')) {
-            $request->headers->set('Authorization', 'Bearer ' . $jwt);
-        }
+    // public function handle($request, Closure $next, ...$guards)
+    // {
+    //     if ($jwt = $request->cookie('access_token')) {
+    //         $request->headers->set('Authorization', 'Bearer ' . $jwt);
+    //     }
 
-        $this->authenticate($request, $guards);
+    //     $this->authenticate($request, $guards);
 
-        return $next($request);
-    }
+    //     return $next($request);
+    // }
 }

@@ -59,5 +59,5 @@ return [
      * request the fields using a camelCase relationship name:
      * GET /users?fields[userOwner]=id,name
      */
-    'convert_relation_names_to_snake_case_plural' => true,
+    'convert_relation_names_to_snake_case_plural' => false,
 ];
