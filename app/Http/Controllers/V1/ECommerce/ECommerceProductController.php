@@ -3,12 +3,11 @@
 namespace App\Http\Controllers\V1\ECommerce;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\ECommerce\ECommerceProductCollection;
+use App\Http\Resources\V1\ECommerce\ECommerceProductResource;
+use App\Models\ECommerce\ECommerceProduct;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\ECommerce\App\Http\Requests\ECommerceProductRequest;
-use Modules\ECommerce\App\Http\Resources\ECommerceProductCollection;
-use Modules\ECommerce\App\Http\Resources\ECommerceProductResource;
-use Modules\ECommerce\App\Models\ECommerceProduct;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\Searchable\Search;
 use Spatie\Tags\Tag;
@@ -22,18 +21,22 @@ class ECommerceProductController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $products = QueryBuilder::for(ECommerceProduct::class)->where('publish', 'published')->allowedFields(
-            'id',
-            'slug',
-            'title',
-            'duration',
-            'author_id',
-            'created_at',
-            'total_views',
-            'total_shares'
-        )->with(['author', 'cover'])->paginate(10);
+        $products = QueryBuilder::for(ECommerceProduct::class)
+            // ->where('publish', 'published')
+            ->allowedFields(
+                'id',
+                'slug',
+                'title',
+                'duration',
+                'author_id',
+                'created_at',
+                'total_views',
+                'total_shares'
+            )
+            ->with(['images'])
+            ->paginate(10);
 
-        return response()->json(['Products' => $products]);
+        return response()->json(['products' => new ECommerceProductCollection($products)]);
     }
 
     /**
@@ -41,24 +44,18 @@ class ECommerceProductController extends Controller
      */
     public function show(ECommerceProduct $product): JsonResponse
     {
-        $product->load(['author', 'cover', 'tags'])->loadCount(['comments as total_comments'])->firstOrFail();
+        $product->load(['images', 'genders'])->firstOrFail();
 
-        return response()->json(['Product' => new ECommerceProductResource($product)]);
+        return response()->json(['product' => new ECommerceProductResource($product)]);
     }
 
     public function featured(): JsonResponse
     {
-        $featureds = ECommerceProduct::where('featured', 1)->select(
-            'id',
-            'slug',
-            'title',
-            'duration',
-            'author_id',
-            'created_at',
-            'total_views',
-            'total_shares'
-        )->with(['author', 'cover'])->withCount(['comments as total_comments'])->limit(5)->get();
-        return response()->json(['featureds' => $featureds]);
+        $featureds = ECommerceProduct::select(
+            '*'
+        )->with(['images'])->limit(6)->get();
+
+        return response()->json(['featureds' => ECommerceProductResource::collection($featureds)]);
     }
 
     public function latest(): JsonResponse

@@ -28,4 +28,12 @@ trait ReviewableRateable
 
         return $ratings;
     }
+
+    /**
+     * Calculate the average rating.
+     */
+    public function averageRating(): float
+    {
+        return $this->reviews()->avg('rating') ?? 0.0;
+    }
 }

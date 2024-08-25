@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Modules\Post\Database\Seeders\PostDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +20,9 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            PostDatabaseSeeder::class,
+            ECommerceGenderSeeder::class,
         ]);
+
+        \App\Models\ECommerce\ECommerceProduct::factory(20)->create();
     }
 }

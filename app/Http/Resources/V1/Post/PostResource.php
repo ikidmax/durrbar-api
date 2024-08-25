@@ -4,6 +4,7 @@ namespace App\Http\Resources\V1\Post;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\V1\Comment\CommentCollection;
+use App\Http\Resources\V1\Tag\TagResource;
 use App\Http\Resources\V1\User\UserResource;
 
 class PostResource extends JsonResource
@@ -34,9 +35,9 @@ class PostResource extends JsonResource
             'deletedAt' => $this->deleted_at,
             // 'comments' => $this->comments,
             'totalComments' => $this->whenCounted('comments'),
-            'coverUrl' => $this->when($this->whenLoaded('cover'), $this->cover->url),
+            'coverUrl' => $this->cover ? $this->cover->url : null,
             'author' => new UserResource($this->whenLoaded('author')),
-            'tags' => $this->tags
+            'tags' => TagResource::collection($this->whenLoaded('tags'))
         ];
     }
 }

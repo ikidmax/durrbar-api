@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sizes', function (Blueprint $table) {
+        Schema::create('ecommerce_sizes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
+            $table->uuidMorphs('sizeable');
+            $table->string('size');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sizes');
+        Schema::dropIfExists('ecommerce_sizes');
     }
 };

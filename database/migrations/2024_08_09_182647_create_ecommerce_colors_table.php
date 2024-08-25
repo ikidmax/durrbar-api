@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('ecommerce_colors', function (Blueprint $table) {
             $table->uuid('id')->primary();
-
+            $table->uuidMorphs('colorable');
+            $table->string('color');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('ecommerce_colors');
     }
 };

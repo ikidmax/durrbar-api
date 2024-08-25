@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\V1\ECommerce\ECommerceProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\V1\Post\PostAdminController;
@@ -42,3 +43,16 @@ Route::controller(PostController::class)->name('posts.')->group(function () {
 Route::apiResource('posts', PostController::class)->scoped(['post' => 'slug'])->only(['index', 'show']);
 
 Route::apiResource('posts.comments', PostsCommentsController::class)->only(['index'])->scoped(['post' => 'slug']);
+
+//
+
+Route::controller(ECommerceProductController::class)->name('posts.')->group(function () {
+
+    Route::get('/products/featureds', 'featured')->name('featured');
+
+    Route::get('/products/latest', 'latest')->name('latest');
+
+    Route::get('/products/search', 'search')->name('search');
+});
+
+Route::apiResource('products', ECommerceProductController::class);

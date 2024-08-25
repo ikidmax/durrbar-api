@@ -18,10 +18,10 @@ class Tag extends TagsTag
      */
     protected $table = 'tags';
 
-    protected static function newFactory(): TagFactory
-    {
-        return TagFactory::new();
-    }
+    // protected static function newFactory(): TagFactory
+    // {
+    //     return TagFactory::new();
+    // }
 
     /**
      * Get all of the posts that are assigned this tag.
