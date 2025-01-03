@@ -5,7 +5,7 @@ namespace App\Models\ECommerce;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class ECommerceSize extends Model
 {
@@ -16,8 +16,8 @@ class ECommerceSize extends Model
 
     protected $fillable = ['size'];
 
-    public function sizeable(): MorphTo
+    public function products(): MorphToMany
     {
-        return $this->morphTo();
+        return $this->morphedByMany(ECommerceProduct::class, 'sizeable', 'ecommerce_sizeables', 'size_id');
     }
 }

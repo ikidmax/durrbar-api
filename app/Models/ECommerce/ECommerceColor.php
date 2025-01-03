@@ -5,7 +5,7 @@ namespace App\Models\ECommerce;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class ECommerceColor extends Model
 {
@@ -14,10 +14,10 @@ class ECommerceColor extends Model
 
     protected $table = 'ecommerce_colors';
 
-    protected $fillable = ['color'];
+    protected $fillable = ['label', 'code'];
 
-    public function colorable(): MorphTo
+    public function products(): MorphToMany
     {
-        return $this->morphTo();
+        return $this->morphedByMany(ECommerceProduct::class, 'colorable', 'ecommerce_colorables', 'color_id');
     }
 }

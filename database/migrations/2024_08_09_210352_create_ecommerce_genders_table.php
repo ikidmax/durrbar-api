@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,13 +18,11 @@ return new class extends Migration
         });
 
         Schema::create('ecommerce_genderables', function (Blueprint $table) {
-            $table->uuid('id')->primary()->default(DB::raw('(UUID())'));
-            $table->uuid('gender_id');
-            $table->uuidMorphs('genderable');
-            $table->timestamps();
+            $table->foreignUuid('gender_id')->constrained('ecommerce_genders')->cascadeOnDelete();
 
-            $table->foreign('gender_id')->references('id')->on('ecommerce_genders')->onDelete('cascade');
-            $table->index(['genderable_id', 'genderable_type']);
+            $table->uuidMorphs('genderable');
+
+            $table->unique(['gender_id', 'genderable_id', 'genderable_type']);
         });
     }
 

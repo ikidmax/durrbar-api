@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\V1\Comment\CommentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,11 +16,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-
-
 Route::name('api.')->prefix('v1')->group(function () {
     require __DIR__ . '/v1/user.php';
     require __DIR__ . '/v1/address.php';
     require __DIR__ . '/v1/post.php';
+
+    Route::prefix('{modelType}/{modelId}')->group(function () {
+        Route::apiResource('comments', CommentController::class);
+    });
 });

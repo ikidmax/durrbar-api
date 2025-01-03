@@ -13,7 +13,7 @@ interface IsComment
 {
     public function commentable(): MorphTo;
 
-    public function replies(): MorphMany;
+    public function comments();
 
     public function user(): BelongsTo;
 }

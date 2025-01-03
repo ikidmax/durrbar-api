@@ -3,20 +3,26 @@
 namespace App\Models\ECommerce;
 
 use App\Models\Image;
+use App\Models\Tag;
 use App\Models\Traits\ReviewableRateable;
+use App\Models\Variant;
+use App\Traits\HasVariants;
+use Database\Factories\ECommerce\ECommerceProductFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-// use Modules\ECommerce\Database\factories\ECommerceProductFactory;
+use Spatie\Tags\HasTags;
 
 class ECommerceProduct extends Model
 {
     use HasFactory;
     use HasUuids;
     use SoftDeletes;
+    use HasTags;
+    use HasVariants;
     use ReviewableRateable;
 
     protected $table = 'ecommerce_products';
@@ -49,21 +55,14 @@ class ECommerceProduct extends Model
         'new_label' => 'array',
         'sale_label' => 'array',
         'colors' => 'array',
+        'price' => 'float',
+        'price_sale' => 'float',
+        'taxes' => 'float',
     ];
 
-    // protected static function newFactory(): ECommerceProductFactory
-    // {
-    //     return ECommerceProductFactory::new();
-    // }
-
-    public function sizes()
+    protected static function newFactory(): ECommerceProductFactory
     {
-        return $this->morphMany(ECommerceSize::class, 'sizeable');
-    }
-
-    public function colors()
-    {
-        return $this->morphMany(ECommerceColor::class, 'colorable');
+        return ECommerceProductFactory::new();
     }
 
     /**
@@ -86,8 +85,18 @@ class ECommerceProduct extends Model
         return $this->images()->first();
     }
 
-    public function genders(): MorphToMany
+    public function variants(): MorphToMany
     {
-        return $this->morphToMany(ECommerceGender::class, 'genderable', 'ecommerce_genderables', 'genderable_id', 'gender_id');
+        return $this->morphToMany(Variant::class, 'variantable');
+    }
+
+    /**
+     * Return the tags relationship.
+     */
+    public function tags(): MorphToMany
+    {
+        return $this
+            ->morphToMany($this->getTagClassName(), 'taggable', 'taggables', null, 'tag_id')
+            ->orderBy('order_column');
     }
 }

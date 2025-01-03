@@ -23,7 +23,7 @@ class CommentResource extends JsonResource
             "updatedAt"         => $this->updated_at,
             "deletedAt"         => $this->deleted_at,
             "user"              => new UserResource($this->user),
-            "replies"           => CommentResource::collection($this->whenLoaded('replies')),
+            "comments"           => CommentResource::collection($this->whenLoaded('comments')),
         ];
     }
 }

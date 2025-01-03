@@ -1,12 +1,10 @@
 <?php
 
 use App\Http\Controllers\V1\ECommerce\ECommerceProductController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\V1\Post\PostAdminController;
 use App\Http\Controllers\V1\Post\PostController;
-use App\Http\Controllers\V1\Post\PostsCommentsController;
-use App\Http\Controllers\V1\Post\PostsCommentsRepliesController;
+use App\Http\Resources\V1\Tag\TagResource;
+use App\Models\Tag;
 
 /*
     |--------------------------------------------------------------------------
@@ -19,40 +17,36 @@ use App\Http\Controllers\V1\Post\PostsCommentsRepliesController;
     |
 */
 
-
-
-Route::middleware(['auth:sanctum'])->group(function () {
-
-    Route::apiResource('/dashboard/posts', PostAdminController::class)->withTrashed()->names('posts.admin');
-
-    Route::post('/dashboard/posts/image', [PostAdminController::class, 'storeImage']);
-
-    Route::apiResource('posts.comments', PostsCommentsController::class)->only(['store'])->scoped(['post' => 'slug']);
-    Route::apiResource('posts.comments.replies', PostsCommentsRepliesController::class)->only(['store'])->scoped(['post' => 'slug']);
+Route::middleware(['auth:sanctum'])->name('dashboard.')->prefix('dashboard')->group(function () {
+    Route::apiResource('posts', PostController::class)->withTrashed()->names('posts');
+    Route::apiResource('products', ECommerceProductController::class)->withTrashed()->names('products');
+    Route::get('tag', function () {
+    return ['tags' => TagResource::collection(Tag::all())];
+});
 });
 
-Route::controller(PostController::class)->name('posts.')->group(function () {
+Route::controller(PostController::class)->name('posts.')->prefix('posts')->group(function () {
 
-    Route::get('/posts/featureds', 'featured')->name('featured');
+    Route::get('featureds', 'featured')->name('featured');
 
-    Route::get('/posts/latest', 'latest')->name('latest');
+    Route::get('latest', 'latest')->name('latest');
 
-    Route::get('/posts/search', 'search')->name('search');
+    Route::get('search', 'search')->name('search');
 });
 
-Route::apiResource('posts', PostController::class)->scoped(['post' => 'slug'])->only(['index', 'show']);
-
-Route::apiResource('posts.comments', PostsCommentsController::class)->only(['index'])->scoped(['post' => 'slug']);
+Route::apiResource('posts', PostController::class)->only(['index', 'show'])->scoped(['post' => 'slug']);
 
 //
 
-Route::controller(ECommerceProductController::class)->name('posts.')->group(function () {
 
-    Route::get('/products/featureds', 'featured')->name('featured');
 
-    Route::get('/products/latest', 'latest')->name('latest');
+Route::controller(ECommerceProductController::class)->name('products.')->prefix('products')->group(function () {
 
-    Route::get('/products/search', 'search')->name('search');
+    Route::get('featureds', 'featured')->name('featured');
+
+    Route::get('latest', 'latest')->name('latest');
+
+    Route::get('search', 'search')->name('search');
 });
 
 Route::apiResource('products', ECommerceProductController::class);

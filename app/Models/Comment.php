@@ -54,8 +54,8 @@ class Comment extends Model implements IsComment
     /**
      * Return the replies relationship.
      */
-    public function replies(): MorphMany
+    public function comments()
     {
-        return $this->morphMany(static::class, 'commentable');
+        return $this->hasMany(Comment::class, 'parent_id')->with('comments');
     }
 }

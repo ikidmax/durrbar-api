@@ -19,12 +19,11 @@ return new class extends Migration
             $table->string('publish')->default('draft');
             $table->boolean('featured')->default(false);
             $table->longText('content');
-            $table->string('author_id');
+            $table->foreignUuid('author_id')->constrained('users')->onDelete('cascade');
             $table->text('description');
-            $table->string('duration');
-            $table->integer('total_views');
-            $table->integer('total_shares');
-            $table->integer('total_favorites');
+            $table->integer('total_views')->default(0);
+            $table->integer('total_shares')->default(0);
+            $table->integer('total_favorites')->default(0);
 
             $table->string('meta_title');
             $table->json('meta_keywords');

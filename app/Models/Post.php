@@ -21,6 +21,8 @@ use App\Models\Tag;
 use App\Models\Image;
 use App\Models\Comment;
 use App\Models\User\User;
+use Illuminate\Support\Facades\Auth;
+use Leshkens\LaravelReadTime\Traits\HasReadTime;
 
 class Post extends Model implements Searchable
 {
@@ -29,6 +31,7 @@ class Post extends Model implements Searchable
     use SoftDeletes;
     use HasTags;
     use HasSlug;
+    use HasReadTime;
 
     /**
      * The table associated with the model.
@@ -53,9 +56,36 @@ class Post extends Model implements Searchable
         'meta_description'
     ];
 
+    protected $casts = [
+        'meta_keywords' => 'array', // Automatically casts to/from JSON
+    ];
+
     protected static function newFactory(): PostFactory
     {
         return PostFactory::new();
+    }
+
+    public static function getTagClassName(): string
+    {
+        return Tag::class;
+    }
+
+    protected function readTime(): array
+    {
+        return [
+            // Attribute for parse. You can split it with 
+            // a dot (e.g 'content.text') if the desired 
+            // attribute is inside a array or json
+            'source' => 'content',
+
+            // No required. If this key is not present, then the current application locale is taken.
+            'locale' => 'en',
+
+            // No required. Options array.
+            'options' => [
+                'strip_tags' => false
+            ]
+        ];
     }
 
     public function getSearchResult(): SearchResult
@@ -79,16 +109,6 @@ class Post extends Model implements Searchable
             ->saveSlugsTo('slug')
             ->slugsShouldBeNoLongerThan(50);
     }
-
-    /**
-     * Get the route key for the model.
-     *
-     * @return string
-     */
-    // public function getRouteKeyName()
-    // {
-    //     return 'slug';
-    // }
 
     /**
      * Get the author that owns the post.
@@ -119,6 +139,8 @@ class Post extends Model implements Searchable
      */
     public function tags(): MorphToMany
     {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this
+            ->morphToMany(self::getTagClassName(), 'taggable', 'taggables', null, 'tag_id')
+            ->orderBy('order_column');
     }
 }

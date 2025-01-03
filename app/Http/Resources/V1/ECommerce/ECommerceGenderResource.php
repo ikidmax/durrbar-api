@@ -15,9 +15,6 @@ class ECommerceGenderResource extends JsonResource
      */
     public function toArray(Request $request)
     {
-        return [
-            'id' => $this->id,
-            'name' => $this->name,
-        ];
+        return $this->name;
     }
 }

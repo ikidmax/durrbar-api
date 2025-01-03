@@ -2,11 +2,11 @@
 
 namespace App\Observers;
 
-use Modules\Post\App\Models\Post;
+use App\Models\Post;
 
 class PostTagSyncObserver
 {
-    public function creating(Post $post)
+    public function created(Post $post)
     {
         $this->syncTags($post);
     }
@@ -18,7 +18,7 @@ class PostTagSyncObserver
 
     private function syncTags(Post $post)
     {
-        $tags = $post->request->get('tags', []); // Access tags from request
+        $tags = request()->input('tags', []); // Access tags from request
         $post->syncTags($tags);
     }
 }

@@ -23,9 +23,9 @@ class ECommerceSizeFactory extends Factory
     {
         return [
             'id' => Str::uuid(),
-            'sizeable_id' => ECommerceProduct::factory(),
-            'sizeable_type' => ECommerceProduct::class,
-            'size' => $this->faker->randomElement(['7', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12', '13']),
+            'size' => $this->faker->randomElement(['XS', 'S', 'M', 'L', 'XL', 'XXL', '7', '8', '8.5', '9', '9.5', '10', '10.5', '11', '11.5', '12', '13']), // Generates a random size
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

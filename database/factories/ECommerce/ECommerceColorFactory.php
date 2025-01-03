@@ -23,9 +23,10 @@ class ECommerceColorFactory extends Factory
     {
         return [
             'id' => Str::uuid(),
-            'colorable_id' => ECommerceProduct::factory(),
-            'colorable_type' => ECommerceProduct::class,
-            'color' => $this->faker->safeHexColor(),
+            'label' => $this->faker->safeColorName(), // Generates a valid color name
+            'code' => $this->faker->safeHexColor(), // Generates a valid hex color code
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 }

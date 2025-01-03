@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('ecommerce_products', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name');
             $table->string('sku');
+            $table->string('name');
+            $table->string('code');
             $table->text('description');
             $table->text('sub_description')->nullable();
             $table->decimal('price', 8, 2);
             $table->string('category');
-            $table->json('gender');
             $table->string('publish');
             $table->integer('available');
             $table->decimal('price_sale', 8, 2)->nullable();

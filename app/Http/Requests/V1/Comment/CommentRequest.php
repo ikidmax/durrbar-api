@@ -11,9 +11,16 @@ class CommentRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+        $rules = [
+            'content' => 'required|max:500',
         ];
+
+        // Add 'parent_id' validation if it's a POST request
+        if ($this->isMethod('post')) {
+            $rules['parent_id'] = 'nullable|exists:comments,id';
+        }
+
+        return $rules;
     }
 
     /**

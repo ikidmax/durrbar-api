@@ -13,9 +13,17 @@ return new class extends Migration
     {
         Schema::create('ecommerce_colors', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuidMorphs('colorable');
-            $table->string('color');
+            $table->string('label');
+            $table->string('code');
             $table->timestamps();
+        });
+
+        Schema::create('ecommerce_colorables', function (Blueprint $table) {
+            $table->foreignUuid('color_id')->constrained('ecommerce_colors')->cascadeOnDelete();
+
+            $table->uuidMorphs('colorable');
+
+            $table->unique(['color_id', 'colorable_id', 'colorable_type']);
         });
     }
 
@@ -25,5 +33,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('ecommerce_colors');
+        Schema::dropIfExists('ecommerce_colorables');
     }
 };

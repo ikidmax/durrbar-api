@@ -14,6 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         //
+        \App\Models\Comment::class => \App\Policies\CommentPolicy::class,
     ];
 
     /**
@@ -21,11 +22,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        // Implicitly grant "Super Admin" role all permissions
-        // This works in the app by using gate-related functions like auth()->user->can() and @can()
-        Gate::before(function ($user, $ability) {
-            return $user->hasRole('super-admin') ? true : null;
-        });
+        // Grant all permissions to "Super Admin" role
+        Gate::before(fn($user) => $user->hasRole('super-admin') ? true : null);
     }
 }

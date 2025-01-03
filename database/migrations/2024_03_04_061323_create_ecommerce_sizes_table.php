@@ -13,10 +13,16 @@ return new class extends Migration
     {
         Schema::create('ecommerce_sizes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuidMorphs('sizeable');
             $table->string('size');
             $table->timestamps();
-            $table->softDeletes();
+        });
+
+        Schema::create('ecommerce_sizeables', function (Blueprint $table) {
+            $table->foreignUuid('size_id')->constrained('ecommerce_sizes')->cascadeOnDelete();
+
+            $table->uuidMorphs('sizeable');
+
+            $table->unique(['size_id', 'sizeable_id', 'sizeable_type']);
         });
     }
 
@@ -26,5 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('ecommerce_sizes');
+        Schema::dropIfExists('ecommerce_sizeables');
     }
 };
